@@ -1,4 +1,91 @@
-# Groundtruth-AI-hackathon\
+# Groundtruth-AI-hackathon
+
+# 🚀 AuraCX — Hyper-Personalized Customer Experience Automation
+
+## 1. The Problem (Real World Scenario)
+
+Retail users expect instant and context-aware answers such as
+“Is this store open right now?”
+“Do you have this in stock?”
+“Where is my order?”
+“I’m cold. What should I do?”
+
+Traditional chatbots usually fail because they give generic replies, ignore location and customer history, cannot interpret vague messages, and sometimes hallucinate. This leads to slow resolutions, frustrated customers, and missed conversion opportunities.
+
+AuraCX solves this by understanding intent, emotion, GPS context, store information, and customer behavior, and then delivering accurate, personalized, and actionable responses.
+
+
+## 2. Expected End Result
+
+Input: The user sends a simple message such as
+“Is your store open?”
+“I want something warm.”
+“Track my order.”
+
+Processing: AuraCX automatically masks PII, detects intent and emotion, reads GPS and customer profile data, chooses between Tooling Mode or RAG Mode, and assembles a validated response.
+
+Output: A precise and helpful answer, for example
+“The Starbucks 50 meters away is open until 10 PM. Since the weather is cold, your Hot Cocoa 10 percent coupon is available. Want directions?”
+or
+“Order 1234 is ready for pickup at the Phoenix store.”
+
+This produces instant and highly relevant customer support.
+
+
+## 3. Technical Approach
+
+AuraCX uses a two-mode AI architecture.
+
+Tooling Mode
+Handles structured and factual tasks such as store hours, stock availability, order status, offers, and competitor proximity.
+Runs through fast, deterministic agents powered by internal data.
+
+RAG Mode
+Used for vague or complex messages such as “I’m cold” or “Recommend something.”
+Includes query rewriting, semantic retrieval, reranking, context compression, and controlled answer generation followed by hallucination checks and self-correction.
+
+Safety
+PII masking before any LLM stage
+Compliance and privacy agent
+Confidence scoring with fallback
+Escalation to human support when needed
+
+Uniqueness
+Real-time location intelligence
+Behavioral personalization
+Emotion and intent awareness
+Modular multi-agent system
+Low hallucination response design
+
+
+## 4. Tech Stack
+
+Python 3.11
+FastAPI or Flask
+Polars or Pandas
+FAISS or ChromaDB for retrieval
+OpenAI GPT or Gemini for reasoning
+Docker and Docker Compose for deployment
+Optional Plotly charts for debugging
+Internal store and geo-context dataset for location intelligence
+
+
+## 5. Challenges and Learnings
+
+Challenge 1: Incorrect or hallucinated LLM outputs
+Solution: Strict separation between Tooling Mode and RAG Mode, evidence-based generation, and a hallucination grader. This reduced incorrect claims significantly.
+
+Challenge 2: Understanding vague or emotional messages
+Solution: A geo-intent and emotion inference system combining weather, GPS, past visits, and affinity data to produce human-like recommendations.
+
+Challenge 3: Coordinating many independent agents
+Solution: A central Synthesizer Agent that merges outputs using priority rules and scoring.
+
+Challenge 4: Handling privacy safely
+Solution: A PII masking agent that ensures no sensitive information reaches external models.
+
+
+
 
 <img width="504" height="1004" alt="_- visual selection (5)" src="https://github.com/user-attachments/assets/80248327-e2ba-4bc3-9fe2-d1bb2ae756de" />
 
