@@ -1,0 +1,229 @@
+{
+  "examples": {
+    "store_hours_query": {
+      "description": "Query store hours",
+      "request": {
+        "message": "Is your store open right now?",
+        "customer_id": "cust_001",
+        "location": {
+          "latitude": 40.7128,
+          "longitude": -74.0060,
+          "address": "New York, NY"
+        },
+        "customer_profile": {
+          "customer_id": "cust_001",
+          "location": {
+            "latitude": 40.7128,
+            "longitude": -74.0060
+          },
+          "past_visits": [
+            {
+              "store": "starbucks_downtown",
+              "date": "2025-12-01",
+              "spent": 15.00
+            }
+          ],
+          "preferences": {
+            "favorite_drink": "latte",
+            "preferred_store": "starbucks_downtown"
+          },
+          "weather_context": "cold"
+        }
+      },
+      "expected_response": {
+        "message": "The Starbucks Downtown is open until 9 PM. Since it's cold, our Hot Cocoa is 10% off with code HOT10. Warm up!",
+        "intent": "store_hours",
+        "emotion": "neutral",
+        "confidence": 0.95,
+        "mode": "tooling",
+        "data": {
+          "store_hours": {
+            "store_name": "Starbucks Downtown",
+            "hours": {
+              "monday": "6:00 AM - 9:00 PM",
+              "tuesday": "6:00 AM - 9:00 PM"
+            },
+            "phone": "+1-555-0101",
+            "address": "123 Main St, New York, NY"
+          },
+          "nearby_stores": [
+            {
+              "store_id": "starbucks_downtown",
+              "name": "Starbucks Downtown",
+              "distance_km": 0.2,
+              "address": "123 Main St, New York, NY"
+            }
+          ]
+        },
+        "requires_escalation": false
+      }
+    },
+
+    "stock_check": {
+      "description": "Check product availability",
+      "request": {
+        "message": "Do you have hot cocoa?",
+        "customer_id": "cust_002",
+        "location": {
+          "latitude": 40.7128,
+          "longitude": -74.0060,
+          "address": "New York, NY"
+        }
+      },
+      "expected_response": {
+        "message": "Yes! We have hot cocoa in stock at the nearby Starbucks Downtown (50 in stock) for $4.95. Would you like directions?",
+        "intent": "stock_check",
+        "emotion": "positive",
+        "confidence": 0.92,
+        "mode": "tooling",
+        "data": {
+          "inventory": [
+            {
+              "available": true,
+              "quantity": 50,
+              "price": 4.95
+            }
+          ]
+        }
+      }
+    },
+
+    "order_status": {
+      "description": "Track order status",
+      "request": {
+        "message": "Where is my order 1234?",
+        "customer_id": "cust_001",
+        "location": {
+          "latitude": 33.4484,
+          "longitude": -112.0742,
+          "address": "Phoenix, AZ"
+        }
+      },
+      "expected_response": {
+        "message": "Order 1234 is ready for pickup at the Phoenix store! Your Cappuccino and Pastry are waiting. Total: $11.44.",
+        "intent": "order_status",
+        "emotion": "positive",
+        "confidence": 0.98,
+        "mode": "tooling",
+        "data": {
+          "order": {
+            "order_id": "1234",
+            "status": "ready_for_pickup",
+            "items": ["Cappuccino", "Pastry"],
+            "total": 11.44,
+            "store": "starbucks_phoenix",
+            "pickup_time": "Now"
+          }
+        }
+      }
+    },
+
+    "location_recommendation": {
+      "description": "Find nearby stores",
+      "request": {
+        "message": "Find me a Starbucks nearby",
+        "customer_id": "cust_003",
+        "location": {
+          "latitude": 34.0522,
+          "longitude": -118.2437,
+          "address": "Los Angeles, CA"
+        }
+      },
+      "expected_response": {
+        "message": "There's a Starbucks Los Angeles just 0.5 km away at 789 Sunset Blvd, open until 9 PM. Perfect for a quick coffee break!",
+        "intent": "location_recommendation",
+        "emotion": "neutral",
+        "confidence": 0.94,
+        "mode": "tooling",
+        "data": {
+          "nearby_stores": [
+            {
+              "store_id": "starbucks_la",
+              "name": "Starbucks Los Angeles",
+              "distance_km": 0.5,
+              "address": "789 Sunset Blvd, Los Angeles, CA",
+              "phone": "+1-555-0103"
+            }
+          ]
+        }
+      }
+    },
+
+    "product_recommendation_cold_weather": {
+      "description": "Get personalized recommendation (cold weather)",
+      "request": {
+        "message": "I'm cold. What should I get?",
+        "customer_id": "cust_004",
+        "location": {
+          "latitude": 40.7128,
+          "longitude": -74.0060,
+          "address": "New York, NY"
+        },
+        "customer_profile": {
+          "customer_id": "cust_004",
+          "location": {
+            "latitude": 40.7128,
+            "longitude": -74.0060
+          },
+          "weather_context": "cold"
+        }
+      },
+      "expected_response": {
+        "message": "Perfect timing! Since it's cold outside, I recommend our Hot Cocoa - warming, delicious, and just $4.95. Plus, you get 10% off with code HOT10. Available at Starbucks Downtown, just 0.2 km away. Warm up! ☕",
+        "intent": "product_recommendation",
+        "emotion": "neutral",
+        "confidence": 0.91,
+        "mode": "tooling",
+        "data": {
+          "offers": [
+            {
+              "code": "HOT10",
+              "description": "Hot Cocoa 10% coupon",
+              "discount": 10,
+              "type": "percentage"
+            }
+          ],
+          "nearby_stores": [
+            {
+              "store_id": "starbucks_downtown",
+              "name": "Starbucks Downtown",
+              "distance_km": 0.2
+            }
+          ]
+        }
+      }
+    },
+
+    "pii_masking_example": {
+      "description": "Message with PII that gets masked",
+      "request": {
+        "message": "Hi, I'm John Smith. My order 1234 was sent to 555-123-4567. My email is john.smith@example.com",
+        "customer_id": "cust_005",
+        "location": {
+          "latitude": 40.7128,
+          "longitude": -74.0060
+        }
+      },
+      "note": "Before intent detection, this gets masked to: 'Hi, I'm [NAME]. My order 1234 was sent to ***-***-4567. My email is j***[EMAIL]'",
+      "response_note": "PII is masked before sending to LLM for privacy"
+    },
+
+    "escalation_example": {
+      "description": "Request that requires escalation",
+      "request": {
+        "message": "Why is your coffee so expensive compared to competitors?",
+        "customer_id": "cust_006",
+        "location": {
+          "latitude": 40.7128,
+          "longitude": -74.0060
+        }
+      },
+      "expected_response": {
+        "message": "I'm not sure I can fully address that. Let me connect you with a support agent who can better discuss pricing.",
+        "intent": "other",
+        "confidence": 0.45,
+        "requires_escalation": true
+      }
+    }
+  }
+}

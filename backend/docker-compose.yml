@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  auracrx-backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./app:/app/app
+    restart: unless-stopped
+
+  # Optional: Add Chroma service for RAG when needed
+  # chromadb:
+  #   image: chromadb/chroma:latest
+  #   ports:
+  #     - "8001:8000"
+  #   environment:
+  #     - ANONYMIZED_TELEMETRY=false
