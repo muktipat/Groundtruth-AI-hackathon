@@ -12,7 +12,7 @@ Retail users expect instant and context-aware answers such as
 
 Traditional chatbots usually fail because they give generic replies, ignore location and customer history, cannot interpret vague messages, and sometimes hallucinate. This leads to slow resolutions, frustrated customers, and missed conversion opportunities.
 
-My Solution
+My Solution: 
 AuraCX solves this by understanding intent, emotion, GPS context, store information, and customer behavior, and then delivering accurate, personalized, and actionable responses.
 AuraCX is built on an agentic AI architecture in which a network of intelligent agents independently reason, retrieve facts, validate information, and synthesize personalized responses. Instead of relying on one large model, the system decomposes the problem into expert agents, ensuring accuracy, transparency, and high reliability. The result is a support engine that behaves more like a smart team than a chatbot.
 
