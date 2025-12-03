@@ -2,12 +2,16 @@
 from typing import Optional, Dict, Any
 from app.models.schemas import ChatRequest, ChatResponse, IntentResult
 from app.agents import IntentAgent, StoreAgent, InventoryAgent, OrderAgent, OffersAgent
+from app.rag.rag_service import RAGService
 from app.utils.pii_masker import pii_masker
 from app.utils.llm_client import llm_client
 from app.utils.logger import get_logger
 from app.config import settings
 
 logger = get_logger(__name__)
+
+# Initialize RAG Service
+rag_service = RAGService()
 
 
 class Synthesizer:
@@ -41,7 +45,8 @@ Format: Natural conversation, avoid technical jargon."""
             
             # Check confidence threshold
             if intent_result.confidence < settings.CONFIDENCE_THRESHOLD:
-                return Synthesizer._create_escalation_response(request)
+                logger.info(f"Low confidence ({intent_result.confidence}) - routing to RAG Mode")
+                return Synthesizer._process_rag_mode(request, masked_message)
             
             # Step 3: Route to appropriate agents based on intent
             agent_data = Synthesizer._route_to_agents(
@@ -169,6 +174,50 @@ Generate a concise, helpful response that addresses their need.
                 emotion=intent_result.emotion,
                 confidence=0.0,
                 mode="tooling",
+                requires_escalation=True
+            )
+    
+    @staticmethod
+    def _process_rag_mode(request: ChatRequest, message: str) -> ChatResponse:
+        """
+        Process request through RAG mode.
+        
+        Args:
+            request: Chat request
+            message: Masked message
+            
+        Returns:
+            ChatResponse from RAG processing
+        """
+        try:
+            # Extract location if available
+            user_location = None
+            if request.location:
+                user_location = {
+                    "latitude": request.location.latitude,
+                    "longitude": request.location.longitude
+                }
+            
+            # Process through RAG
+            rag_result = rag_service.process_query(message, user_location)
+            
+            return ChatResponse(
+                message=rag_result.get("answer", "Unable to process your query."),
+                confidence=rag_result.get("confidence", 0.5),
+                mode="rag",
+                data={
+                    "rewritten_query": rag_result.get("rewritten_query"),
+                    "sources": rag_result.get("sources", []),
+                    "source_count": rag_result.get("source_count", 0)
+                },
+                requires_escalation=rag_result.get("requires_escalation", False)
+            )
+        except Exception as e:
+            logger.error(f"RAG mode processing failed: {str(e)}")
+            return ChatResponse(
+                message="I encountered an issue processing your request. Let me connect you with a specialist.",
+                confidence=0.0,
+                mode="rag",
                 requires_escalation=True
             )
     
